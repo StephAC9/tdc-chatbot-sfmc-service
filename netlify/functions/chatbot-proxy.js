@@ -1,9 +1,5 @@
 export const handler = async (event) => {
-  const {
-    API_URL,
-    DEFAULT_API_KEY,
-    ALLOWED_ORIGINS
-  } = process.env;
+  const { API_URL, ALLOWED_ORIGINS } = process.env;
 
   if (!API_URL) {
     return {
@@ -12,6 +8,20 @@ export const handler = async (event) => {
     };
   }
 
+  /* ---------- Require API key ---------- */
+  const params = new URLSearchParams(event.queryStringParameters || {});
+  const apiKey = params.get("apikey");
+
+  if (!apiKey) {
+    return {
+      statusCode: 401,
+      body: JSON.stringify({
+        error: "Missing apikey"
+      })
+    };
+  }
+
+  /* ---------- CORS ---------- */
   const allowedOrigins = ALLOWED_ORIGINS
     ? ALLOWED_ORIGINS.split(",").map(o => o.trim())
     : [];
@@ -19,7 +29,7 @@ export const handler = async (event) => {
   const origin = event.headers.origin || "";
   const corsOrigin = allowedOrigins.includes(origin)
     ? origin
-    : allowedOrigins[0] || "*";
+    : allowedOrigins[0];
 
   const corsHeaders = {
     "Access-Control-Allow-Origin": corsOrigin,
@@ -27,7 +37,7 @@ export const handler = async (event) => {
     "Access-Control-Allow-Methods": "GET, OPTIONS"
   };
 
-  /* ---------- CORS Preflight ---------- */
+  /* ---------- Preflight ---------- */
   if (event.httpMethod === "OPTIONS") {
     return {
       statusCode: 200,
@@ -44,14 +54,8 @@ export const handler = async (event) => {
     };
   }
 
+  /* ---------- Proxy request ---------- */
   try {
-    const params = new URLSearchParams(event.queryStringParameters || {});
-
-    // Hide SFMC API key from browser
-    if (!params.get("apikey") && DEFAULT_API_KEY) {
-      params.append("apikey", DEFAULT_API_KEY);
-    }
-
     const url = `${API_URL}?${params.toString()}`;
 
     const response = await fetch(url);
@@ -72,7 +76,7 @@ export const handler = async (event) => {
       headers: corsHeaders,
       body: JSON.stringify({
         error: true,
-        message: "SFMC proxy failed",
+        message: "Proxy call to SFMC failed",
         details: err.message
       })
     };
