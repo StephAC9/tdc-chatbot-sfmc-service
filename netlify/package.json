@@ -1,0 +1,9 @@
+{
+  "name": "tdc-gen-ai-personalization-agent",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "netlify dev"
+  }
+}
