@@ -1,5 +1,5 @@
 {
-  "name": "tdc-gen-ai-personalization-agent",
+  "name": "tdc-chatbot-service",
   "version": "1.0.0",
   "private": true,
   "type": "module",
