@@ -1,5 +1,7 @@
-[build]
-  functions = "netlify/functions"
-
 [functions]
-  node_bundler = "esbuild"
+  directory = "netlify/functions"
+
+[[redirects]]
+  from = "/chatbot-proxy"
+  to = "/.netlify/functions/chatbot-proxy"
+  status = 200
