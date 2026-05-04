@@ -8,7 +8,83 @@ export const handler = async (event) => {
     };
   }
 
-  /* ---------- Require API key ---------- */
+  const origin = event.headers.origin || "";
+
+  const allowedOrigins = ALLOWED_ORIGINS
+    ? ALLOWED_ORIGINS.split(",").map(o => o.trim())
+    : [];
+
+  if (!allowedOrigins.includes(origin)) {
+    return {
+      statusCode: 403,
+      body: JSON.stringify({ error: "Origin not allowed" })
+    };
+  }
+
+  const corsHeaders = {
+    "Access-Control-Allow-Origin": origin,
+    "Access-Control-Allow-Headers": "Content-Type",
+    "Access-Control-Allow-Methods": "GET, OPTIONS",
+    "Vary": "Origin"
+  };
+
+  if (event.httpMethod === "OPTIONS") {
+    return {
+      statusCode: 200,
+      headers: corsHeaders,
+      body: ""
+    };
+  }
+
+  const params = new URLSearchParams(event.queryStringParameters || {});
+  const apiKey = params.get("apikey");
+
+  if (!apiKey) {
+    return {
+      statusCode: 401,
+      headers: corsHeaders,
+      body: JSON.stringify({ error: "Missing apikey" })
+    };
+  }
+
+  try {
+    const response = await fetch(`${API_URL}?${params.toString()}`);
+    const text = await response.text();
+
+    return {
+      statusCode: response.status,
+      headers: {
+        ...corsHeaders,
+        "Content-Type": "application/json"
+      },
+      body: text
+    };
+
+  } catch (err) {
+    return {
+      statusCode: 500,
+      headers: corsHeaders,
+      body: JSON.stringify({
+        error: true,
+        message: "Proxy call to SFMC failed",
+        details: err.message
+      })
+    };
+  }
+};
+
+
+/*export const handler = async (event) => {
+  const { API_URL, ALLOWED_ORIGINS } = process.env;
+
+  if (!API_URL) {
+    return {
+      statusCode: 500,
+      body: JSON.stringify({ error: "API_URL not configured" })
+    };
+  }
+
+  
   const params = new URLSearchParams(event.queryStringParameters || {});
   const apiKey = params.get("apikey");
 
@@ -21,7 +97,7 @@ export const handler = async (event) => {
     };
   }
 
-  /* ---------- CORS ---------- */
+  
   const allowedOrigins = ALLOWED_ORIGINS
     ? ALLOWED_ORIGINS.split(",").map(o => o.trim())
     : [];
@@ -37,7 +113,7 @@ export const handler = async (event) => {
     "Access-Control-Allow-Methods": "GET, OPTIONS"
   };
 
-  /* ---------- Preflight ---------- */
+  
   if (event.httpMethod === "OPTIONS") {
     return {
       statusCode: 200,
@@ -54,7 +130,7 @@ export const handler = async (event) => {
     };
   }
 
-  /* ---------- Proxy request ---------- */
+ 
   try {
     const url = `${API_URL}?${params.toString()}`;
 
@@ -81,4 +157,4 @@ export const handler = async (event) => {
       })
     };
   }
-};
+};*/
