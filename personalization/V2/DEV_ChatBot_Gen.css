@@ -1,0 +1,1562 @@
+body {
+  font-family: 'Mukta Mahee', sans-serif;
+  font-size: 14px!important;
+}
+
+/* ======================================================================
+   CHATBOT ROOT
+====================================================================== */
+
+#chatbot {
+  position: fixed;
+  right: 5%;
+  bottom: 10vh;
+  z-index: 1000000;
+  font-family: inherit;
+  display: block !important;
+}
+
+/* ======================================================================
+   FLOATING BOT FIGURE
+====================================================================== */
+
+.chatbotFigure {
+  position: fixed;
+  bottom: 16px;
+  right: 16px;
+
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  cursor: pointer;
+  z-index: 1000;
+}
+
+.chatbotBadge {
+  position: absolute;
+  top: -4px;
+  right: -4px;
+  min-width: 20px;
+  height: 20px;
+  background: #ff2d2d;
+  color: #fff;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Attention animation */
+.chatbotFigure.attentionPulse {
+  animation: pulseStrong 1.2s ease-out infinite;
+}
+
+@keyframes pulseStrong {
+  0% {
+    transform: scale(1);
+    box-shadow: 0 0 0 0 rgba(35, 60, 237, 0.5);
+  }
+  50% {
+    transform: scale(1.15);
+    box-shadow: 0 0 0 16px rgba(35, 60, 237, 0);
+  }
+  100% {
+    transform: scale(1);
+    box-shadow: 0 0 0 0 rgba(35, 60, 237, 0);
+  }
+}
+
+
+/* ======================================================================
+   CHAT CANVAS (CRITICAL FIX)
+====================================================================== */
+
+#chatCanvas {
+  position: fixed;
+  right: 30px;
+  bottom: 70px;
+
+  width: 400px;
+  height: 70vh;              /* ✅ FIXED HEIGHT */
+
+  display: flex;
+  flex-direction: column;    /* ✅ STACK HEADER + BODY */
+
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+
+  z-index: 1000;
+  overflow: hidden;          /* ✅ PREVENT OVERFLOW */
+}
+
+@media (max-width: 600px) {
+  #chatCanvas {
+    right: 8px;
+    bottom: 8px;
+    width: calc(100% - 16px);
+  }
+  .chatOverlay {
+    right: 8px;
+    width: calc(100% - 16px);
+  }
+}
+
+/* ======================================================================
+   HEADER (RESERVED SPACE)
+====================================================================== */
+
+.chatCanvasHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  padding: 12px 14px;
+}
+
+/* Header logo */
+.chatHeaderLogo {
+  height: 28px;          /* ✅ increased from ~20px */
+  max-height: 32px;     /* safety */
+  width: auto;
+
+  object-fit: contain;
+  display: block;
+}
+
+
+.separator {
+  height: 1px;
+  border: none;
+
+  background-color: #d9d9d9;  /* ✅ darker, visible */
+  margin: 0;
+
+  flex-shrink: 0;             /* ✅ prevents collapse in flex layouts */
+}
+
+/* ======================================================================
+   CHAT CONTAINER (SCROLL AREA ONLY)
+====================================================================== */
+
+#chatContainer {
+  flex: 1;                    /* ✅ TAKES REMAINING SPACE */
+  overflow-y: auto;
+
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+
+  padding: 12px;
+  font-size: 14px;
+}
+
+/* ======================================================================
+   AGENT MESSAGES
+====================================================================== */
+
+.agentMessageWrapper {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  max-width: 90%;
+}
+
+.agentMessage {
+  background: #eef1ff;
+  padding: 12px 14px;
+  border-radius: 8px;
+  line-height: 1.4;
+}
+
+.chatbotAvatar {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background-size: cover;
+  background-position: center;
+  flex-shrink: 0;
+}
+
+/* ======================================================================
+   USER MESSAGES
+====================================================================== */
+
+.userMessageWrapper {
+  display: flex;
+  justify-content: flex-end;
+  align-items: flex-end;
+  gap: 8px;
+}
+
+.userMessage {
+  background: #233ced;
+  color: #fff;
+  padding: 12px 16px;
+  border-radius: 10px;
+  max-width: 75%;
+}
+
+.userAvatar {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background-size: cover;
+  background-position: center;
+  flex-shrink: 0;
+}
+
+/* ======================================================================
+   CATEGORY / TOPICS
+====================================================================== */
+
+.categoriesContainer,
+.topicsContainer,
+.subTopicsContainer {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+
+  padding-left: 36px; /* align under agent bubble */
+}
+
+.categoryItem,
+.topicItem,
+.subTopicItem {
+  padding: 8px 14px;
+  border-radius: 8px;
+  background: #f3f3f3;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.categoryItem:hover {
+  background: #dcdcdc;
+}
+
+/* ======================================================================
+   LOADER
+====================================================================== */
+
+.bouncingDots {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+}
+
+.bouncingDots div {
+  width: 6px;
+  height: 6px;
+  background: #666;
+  border-radius: 50%;
+  animation: bounce 0.6s infinite alternate;
+}
+
+.bouncingDots div:nth-child(2) {
+  animation-delay: 0.2s;
+}
+
+.bouncingDots div:nth-child(3) {
+  animation-delay: 0.4s;
+}
+
+@keyframes bounce {
+  from { transform: translateY(0); opacity: 0.4; }
+  to   { transform: translateY(-6px); opacity: 1; }
+}
+
+/* ======================================================================
+   UTIL
+====================================================================== */
+
+.hide {
+  display: none !important;
+}
+
+/* ===============================
+   SIDE OVERLAY PANEL
+================================ */
+
+.chatOverlay {
+  position: fixed;
+  right: 440px;
+  bottom: 70px;
+
+  width: 360px;
+  max-height: 70vh;
+
+  background: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.25);
+
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+
+  z-index: 1001;
+}
+
+.chatOverlay.hide {
+  display: none;
+}
+
+/* close button */
+#closeOverlayBtn {
+  align-self: flex-end;
+  font-size: 20px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 10px 14px;
+}
+
+/* content */
+#overlayContent {
+  padding: 14px;
+  overflow-y: auto;
+}
+
+/* ===============================
+   EVENT / PRODUCT CARDS
+================================ */
+
+.overlayCard {
+  border: 1px solid #eee;
+  border-radius: 6px;
+  padding: 12px;
+  margin-bottom: 12px;
+}
+
+.overlayCard h4 {
+  margin: 0 0 6px 0;
+  font-size: 15px;
+}
+
+.overlayCard p {
+  margin: 4px 0;
+  font-size: 13px;
+  line-height: 1.4;
+}
+
+.overlayCard a {
+  display: inline-block;
+  margin-top: 6px;
+  color: #233ced;
+  font-size: 13px;
+  text-decoration: none;
+}
+
+.overlayCard a:hover {
+  text-decoration: underline;
+}
+
+/* ===============================
+   EVENT / PRODUCT LIST
+================================ */
+
+.chatListContainer {
+  margin-left: 36px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.chatListItem {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  padding: 6px 10px;
+  border-radius: 6px;
+
+  background: #f3f3f3;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.chatListItem:hover {
+  background: #e5e5e5;
+}
+
+.chatListIcon {
+  font-size: 14px;
+}
+
+.chatListName {
+  font-size: 13px;
+}
+
+
+
+/* =========================================================
+   FORM WRAPPER (ALIGN WITH CHAT FLOW)
+========================================================= */
+
+.leadFormWrapper {
+    display: flex;
+    align-items: flex-start;
+
+    margin-left: 36px;      /* ✅ SAME as avatar offset */
+    max-width: 75%;         /* ✅ Same width as chat bubbles */
+    width: 100%;
+}
+
+
+/* =========================================================
+   MAIN FORM CONTAINER
+========================================================= */
+
+/* =========================================================
+   FORM WRAPPER (CHAT ALIGNMENT)
+========================================================= */
+
+.mainform {
+  width: 100%;
+  max-width: 100%;
+
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+
+  gap: 10px;
+  padding: 0;
+
+  font-family: 'Mukta Mahee', sans-serif;
+  box-sizing: border-box;
+}
+
+
+/* =========================================================
+   FIELD WRAPPERS
+========================================================= */
+
+.input-wrapper,
+.floating-group {
+  position: relative;
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+
+  margin-bottom: 8px;
+}
+
+
+/* =========================================================
+   INPUT BASE (ALL FIELDS CONSISTENT ✅)
+========================================================= */
+
+.input-wrapper input,
+.floating-group input,
+.floating-group textarea {
+  width: 100%;
+  box-sizing: border-box;
+
+  padding: 14px;
+
+  font-size: 14px;
+  font-family: 'Mukta Mahee', sans-serif;
+
+  color: #333;
+  background-color: #fff;
+
+  border: 1px solid #d6d6d6;
+  border-radius: 6px;
+
+  outline: none;
+
+  transition: border 0.2s ease;
+}
+
+
+/* ✅ COMPANY FIELD FIX (MATCH OTHERS) */
+.input-wrapper input {
+  padding-left: 34px;   /* for icon */
+  padding-right: 42px;  /* for spinner/cancel */
+}
+
+
+/* =========================================================
+   FOCUS STATE
+========================================================= */
+
+.input-wrapper input:focus,
+.floating-group input:focus,
+.floating-group textarea:focus {
+  border-color: #233ced;
+}
+
+
+/* =========================================================
+   FLOATING LABELS (SMOOTH + CLEAN)
+========================================================= */
+
+.floating-label,
+.floating-group label {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+
+  transform: translateY(-50%);
+
+  font-size: 14px;
+  color: #888;
+
+  pointer-events: none;
+
+  background: #fff;
+  padding: 0 4px;
+
+  transition: all 0.2s ease;
+}
+
+
+/* ✅ COMPANY LABEL OFFSET */
+.input-wrapper .floating-label {
+  left: 34px;
+}
+
+
+/* ✅ ACTIVE STATE */
+.input-wrapper input:focus + .floating-label,
+.input-wrapper input:not(:placeholder-shown) + .floating-label,
+.floating-group input:focus + label,
+.floating-group input:not(:placeholder-shown) + label,
+.floating-group textarea:focus + label,
+.floating-group textarea:not(:placeholder-shown) + label {
+  top: -6px;
+  font-size: 11px;
+  color: #233ced;
+
+  transform: none;
+}
+
+
+/* =========================================================
+   SEARCH ICON
+========================================================= */
+
+.search-icon {
+  position: absolute;
+  left: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 15px;
+}
+
+
+/* =========================================================
+   SPINNER (FIXED + CLEAN)
+========================================================= */
+
+.spinner {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+
+  width: 16px;
+  height: 16px;
+
+  border-radius: 50%;
+  border: 2px solid #e5e5e5;
+  border-top: 2px solid #233ced;
+
+  opacity: 0;
+  pointer-events: none;
+
+  animation: none;             /* ✅ STOP animation by default */
+}
+
+/* ✅ ACTIVE STATE */
+.spinner.active {
+  opacity: 1;
+  animation: spin 0.7s linear infinite;  /* ✅ only spin when active */
+}
+
+/* SMOOTH ROTATION (no shaking) */
+@keyframes spin {
+  from {
+    transform: translateY(-50%) rotate(0deg);
+  }
+  to {
+    transform: translateY(-50%) rotate(360deg);
+  }
+}
+
+
+/* =========================================================
+   CANCEL BUTTON
+========================================================= */
+
+.cancel-btn {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 20px;
+    height: 20px;
+    font-size: 13px;
+    cursor: pointer;
+    display: none;
+}
+
+.input-wrapper input.has-value ~ .cancel-btn {
+  display: block;
+}
+
+#company.has-value ~ .cancel-btn {
+  display: block;
+}
+
+
+/* =========================================================
+   DROPDOWN RESULTS
+========================================================= */
+
+#results {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  width: 100%;
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  z-index: 999;
+  max-height: 150px;
+  overflow-y: auto;
+  display: none;
+  padding: 4px;
+}
+
+.result-item {
+  padding: 8px 10px;
+  font-size: 13px;
+  cursor: pointer;
+  border-radius: 4px;
+  margin-bottom: 4px;
+}
+
+/* remove last gap */
+.result-item:last-child {
+  margin-bottom: 0;
+}
+
+
+.result-item:hover {
+  background: #f4f4f4;
+}
+
+#results {
+  scrollbar-width: thin;
+}
+
+#results::-webkit-scrollbar {
+  width: 6px;
+}
+
+#results::-webkit-scrollbar-thumb {
+  background: #ccc;
+  border-radius: 3px;
+}
+
+
+/* =========================================================
+   STATUS MESSAGE
+========================================================= */
+
+#statusMessage {
+  font-size: 12px;
+  color: #d32f2f;
+  margin-top: 2px;
+}
+
+
+/* =========================================================
+   BUTTON
+========================================================= */
+
+.btn-submit {
+  margin-top: 10px;
+
+  padding: 10px 16px;
+
+  border-radius: 6px;
+  border: none;
+
+  background: #233ced;
+  color: #fff;
+
+  font-size: 14px;
+  cursor: pointer;
+
+  align-self: flex-start;
+}
+
+.btn-submit:hover {
+  background: #1a2fc2;
+}
+
+
+/* =========================================================
+   MOBILE (VERY IMPORTANT)
+========================================================= */
+
+@media (max-width: 600px) {
+
+  .mainform {
+    gap: 12px;
+  }
+
+  .input-wrapper input,
+  .floating-group input,
+  .floating-group textarea {
+    font-size: 16px; /* ✅ prevents zoom on iOS */
+  }
+
+  .input-wrapper input {
+    padding-left: 34px;
+    padding-right: 42px;
+  }
+
+  .btn-submit {
+    width: 100%;
+    text-align: center;
+  }
+
+  .search-icon {
+    left: 8px;
+  }
+
+  .cancel-btn {
+    right: 32px;
+  }
+}
+
+
+
+
+
+
+/* ======================================================================
+   CHATBOT ROOT
+====================================================================== 
+
+#chatbot {
+  position: fixed;
+  right: 5%;
+  bottom: 10vh;
+  z-index: 1000000;
+  font-family: inherit;
+  display: block !important;
+}
+
+/* ======================================================================
+   FLOATING BOT FIGURE
+====================================================================== 
+
+.chatbotFigure {
+  position: fixed;
+  bottom: 16px;
+  right: 16px;
+
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  cursor: pointer;
+  z-index: 1000;
+}
+
+.chatbotBadge {
+  position: absolute;
+  top: -4px;
+  right: -4px;
+  min-width: 20px;
+  height: 20px;
+  background: #ff2d2d;
+  color: #fff;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Attention animation 
+.chatbotFigure.attentionPulse {
+  animation: pulseStrong 1.2s ease-out infinite;
+}
+
+@keyframes pulseStrong {
+  0% {
+    transform: scale(1);
+    box-shadow: 0 0 0 0 rgba(35, 60, 237, 0.5);
+  }
+  50% {
+    transform: scale(1.15);
+    box-shadow: 0 0 0 16px rgba(35, 60, 237, 0);
+  }
+  100% {
+    transform: scale(1);
+    box-shadow: 0 0 0 0 rgba(35, 60, 237, 0);
+  }
+}
+
+
+/* ======================================================================
+   CHAT CANVAS (CRITICAL FIX)
+====================================================================== 
+
+#chatCanvas {
+  position: fixed;
+  right: 30px;
+  bottom: 70px;
+
+  width: 400px;
+  height: 70vh;              /* ✅ FIXED HEIGHT 
+
+  display: flex;
+  flex-direction: column;    /* ✅ STACK HEADER + BODY 
+
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+
+  z-index: 1000;
+  overflow: hidden;          /* ✅ PREVENT OVERFLOW 
+}
+
+@media (max-width: 600px) {
+  #chatCanvas {
+    right: 8px;
+    bottom: 8px;
+    width: calc(100% - 16px);
+  }
+  .chatOverlay {
+    right: 8px;
+    width: calc(100% - 16px);
+  }
+}
+
+/* ======================================================================
+   HEADER (RESERVED SPACE)
+====================================================================== 
+
+.chatCanvasHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  padding: 12px 14px;
+}
+
+/* Header logo 
+.chatHeaderLogo {
+  height: 28px;          /* ✅ increased from ~20px 
+  max-height: 32px;     /* safety 
+  width: auto;
+
+  object-fit: contain;
+  display: block;
+}
+
+
+.separator {
+  height: 1px;
+  border: none;
+
+  background-color: #d9d9d9;  /* ✅ darker, visible 
+  margin: 0;
+
+  flex-shrink: 0;             /* ✅ prevents collapse in flex layouts 
+}
+
+/* ======================================================================
+   CHAT CONTAINER (SCROLL AREA ONLY)
+====================================================================== 
+
+#chatContainer {
+  flex: 1;                    /* ✅ TAKES REMAINING SPACE 
+  overflow-y: auto;
+
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+
+  padding: 12px;
+  font-size: 14px;
+}
+
+/* ======================================================================
+   AGENT MESSAGES
+====================================================================== 
+
+.agentMessageWrapper {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  max-width: 90%;
+}
+
+.agentMessage {
+  background: #eef1ff;
+  padding: 12px 14px;
+  border-radius: 8px;
+  line-height: 1.4;
+}
+
+.chatbotAvatar {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background-size: cover;
+  background-position: center;
+  flex-shrink: 0;
+}
+
+/* ======================================================================
+   USER MESSAGES
+====================================================================== 
+
+.userMessageWrapper {
+  display: flex;
+  justify-content: flex-end;
+  align-items: flex-end;
+  gap: 8px;
+}
+
+.userMessage {
+  background: #233ced;
+  color: #fff;
+  padding: 12px 16px;
+  border-radius: 10px;
+  max-width: 75%;
+}
+
+.userAvatar {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background-size: cover;
+  background-position: center;
+  flex-shrink: 0;
+}
+
+/* ======================================================================
+   CATEGORY / TOPICS
+====================================================================== 
+
+.categoriesContainer,
+.topicsContainer,
+.subTopicsContainer {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+
+  padding-left: 36px; /* align under agent bubble 
+}
+
+.categoryItem,
+.topicItem,
+.subTopicItem {
+  padding: 8px 14px;
+  border-radius: 8px;
+  background: #f3f3f3;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.categoryItem:hover {
+  background: #dcdcdc;
+}
+
+/* ======================================================================
+   LOADER
+====================================================================== 
+
+.bouncingDots {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+}
+
+.bouncingDots div {
+  width: 6px;
+  height: 6px;
+  background: #666;
+  border-radius: 50%;
+  animation: bounce 0.6s infinite alternate;
+}
+
+.bouncingDots div:nth-child(2) {
+  animation-delay: 0.2s;
+}
+
+.bouncingDots div:nth-child(3) {
+  animation-delay: 0.4s;
+}
+
+@keyframes bounce {
+  from { transform: translateY(0); opacity: 0.4; }
+  to   { transform: translateY(-6px); opacity: 1; }
+}
+
+/* ======================================================================
+   UTIL
+====================================================================== 
+
+.hide {
+  display: none !important;
+}
+
+/* ===============================
+   SIDE OVERLAY PANEL
+================================ 
+
+.chatOverlay {
+  position: fixed;
+  right: 440px;
+  bottom: 70px;
+
+  width: 360px;
+  max-height: 70vh;
+
+  background: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.25);
+
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+
+  z-index: 1001;
+}
+
+.chatOverlay.hide {
+  display: none;
+}
+
+/* close button 
+#closeOverlayBtn {
+  align-self: flex-end;
+  font-size: 20px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 10px 14px;
+}
+
+/* content 
+#overlayContent {
+  padding: 14px;
+  overflow-y: auto;
+}
+
+/* ===============================
+   EVENT / PRODUCT CARDS
+================================ 
+
+.overlayCard {
+  border: 1px solid #eee;
+  border-radius: 6px;
+  padding: 12px;
+  margin-bottom: 12px;
+}
+
+.overlayCard h4 {
+  margin: 0 0 6px 0;
+  font-size: 15px;
+}
+
+.overlayCard p {
+  margin: 4px 0;
+  font-size: 13px;
+  line-height: 1.4;
+}
+
+.overlayCard a {
+  display: inline-block;
+  margin-top: 6px;
+  color: #233ced;
+  font-size: 13px;
+  text-decoration: none;
+}
+
+.overlayCard a:hover {
+  text-decoration: underline;
+}
+
+/* ===============================
+   EVENT / PRODUCT LIST
+================================ 
+
+.chatListContainer {
+  margin-left: 36px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.chatListItem {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  padding: 6px 10px;
+  border-radius: 6px;
+
+  background: #f3f3f3;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.chatListItem:hover {
+  background: #e5e5e5;
+}
+
+.chatListIcon {
+  font-size: 14px;
+}
+
+.chatListName {
+  font-size: 13px;
+}
+
+/* ===============================
+   FORM WRAPPER
+================================ 
+
+.formContainer {
+  background:#fff;
+  border-radius:12px;
+  padding:16px;
+}
+
+/* Floating label 
+.input-group {
+  position: relative;
+  margin-bottom:18px;
+}
+
+.input-group input,
+.input-group textarea {
+  width:100%;
+  border:none;
+  border-bottom:1px solid #ccc;
+  padding:10px 0 6px;
+  outline:none;
+}
+
+.input-group label {
+  position:absolute;
+  left:0;
+  top:10px;
+  color:#999;
+  transition:0.2s;
+}
+
+.input-group input:focus + label,
+.input-group input:not(:placeholder-shown) + label,
+.input-group textarea:focus + label,
+.input-group textarea:not(:placeholder-shown) + label {
+  top:-10px;
+  font-size:11px;
+  color:#233ced;
+}
+
+/* Buttons 
+.submit-btn-section {
+  display:flex;
+  gap:8px;
+}
+
+.submit-btn-section button {
+  flex:1;
+  padding:8px;
+  border-radius:6px;
+  border:none;
+  background:#233ced;
+  color:#fff;
+  cursor:pointer;
+}
+
+
+
+/* ======================================================================
+   CHATBOT ROOT
+====================================================================== 
+
+#chatbot {
+  position: fixed;
+  right: 5%;
+  bottom: 10vh;
+  z-index: 1000000;
+  font-family: inherit;
+  display: block !important;
+}
+
+/* ======================================================================
+   FLOATING BOT FIGURE
+====================================================================== 
+
+.chatbotFigure {
+  position: fixed;
+  bottom: 16px;
+  right: 16px;
+
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  cursor: pointer;
+  z-index: 1000;
+}
+
+.chatbotBadge {
+  position: absolute;
+  top: -4px;
+  right: -4px;
+  min-width: 20px;
+  height: 20px;
+  background: #ff2d2d;
+  color: #fff;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Attention animation 
+.chatbotFigure.attentionPulse {
+  animation: pulseStrong 1.2s ease-out infinite;
+}
+
+@keyframes pulseStrong {
+  0% {
+    transform: scale(1);
+    box-shadow: 0 0 0 0 rgba(35, 60, 237, 0.5);
+  }
+  50% {
+    transform: scale(1.15);
+    box-shadow: 0 0 0 16px rgba(35, 60, 237, 0);
+  }
+  100% {
+    transform: scale(1);
+    box-shadow: 0 0 0 0 rgba(35, 60, 237, 0);
+  }
+}
+
+
+/* ======================================================================
+   CHAT CANVAS (CRITICAL FIX)
+====================================================================== 
+
+#chatCanvas {
+  position: fixed;
+  right: 30px;
+  bottom: 70px;
+
+  width: 400px;
+  height: 70vh;              /* ✅ FIXED HEIGHT 
+
+  display: flex;
+  flex-direction: column;    /* ✅ STACK HEADER + BODY 
+
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+
+  z-index: 1000;
+  overflow: hidden;          /* ✅ PREVENT OVERFLOW 
+}
+
+@media (max-width: 600px) {
+  #chatCanvas {
+    right: 8px;
+    bottom: 8px;
+    width: calc(100% - 16px);
+  }
+  .chatOverlay {
+    right: 8px;
+    width: calc(100% - 16px);
+  }
+}
+
+/* ======================================================================
+   HEADER (RESERVED SPACE)
+====================================================================== 
+
+.chatCanvasHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  padding: 12px 14px;
+}
+
+/* Header logo 
+.chatHeaderLogo {
+  height: 28px;          /* ✅ increased from ~20px 
+  max-height: 32px;     /* safety 
+  width: auto;
+
+  object-fit: contain;
+  display: block;
+}
+
+
+.separator {
+  height: 1px;
+  border: none;
+
+  background-color: #d9d9d9;  /* ✅ darker, visible 
+  margin: 0;
+
+  flex-shrink: 0;             /* ✅ prevents collapse in flex layouts 
+}
+
+/* ======================================================================
+   CHAT CONTAINER (SCROLL AREA ONLY)
+====================================================================== 
+
+#chatContainer {
+  flex: 1;                    /* ✅ TAKES REMAINING SPACE 
+  overflow-y: auto;
+
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+
+  padding: 12px;
+  font-size: 14px;
+}
+
+/* ======================================================================
+   AGENT MESSAGES
+====================================================================== 
+
+.agentMessageWrapper {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  max-width: 90%;
+}
+
+.agentMessage {
+  background: #eef1ff;
+  padding: 12px 14px;
+  border-radius: 8px;
+  line-height: 1.4;
+}
+
+.chatbotAvatar {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background-size: cover;
+  background-position: center;
+  flex-shrink: 0;
+}
+
+/* ======================================================================
+   USER MESSAGES
+====================================================================== 
+
+.userMessageWrapper {
+  display: flex;
+  justify-content: flex-end;
+  align-items: flex-end;
+  gap: 8px;
+}
+
+.userMessage {
+  background: #233ced;
+  color: #fff;
+  padding: 12px 16px;
+  border-radius: 10px;
+  max-width: 75%;
+}
+
+.userAvatar {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background-size: cover;
+  background-position: center;
+  flex-shrink: 0;
+}
+
+/* ======================================================================
+   CATEGORY / TOPICS
+====================================================================== 
+
+.categoriesContainer,
+.topicsContainer,
+.subTopicsContainer {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+
+  padding-left: 36px; /* align under agent bubble 
+}
+
+.categoryItem,
+.topicItem,
+.subTopicItem {
+  padding: 8px 14px;
+  border-radius: 8px;
+  background: #f3f3f3;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.categoryItem:hover {
+  background: #dcdcdc;
+}
+
+/* ======================================================================
+   LOADER
+====================================================================== 
+
+.bouncingDots {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+}
+
+.bouncingDots div {
+  width: 6px;
+  height: 6px;
+  background: #666;
+  border-radius: 50%;
+  animation: bounce 0.6s infinite alternate;
+}
+
+.bouncingDots div:nth-child(2) {
+  animation-delay: 0.2s;
+}
+
+.bouncingDots div:nth-child(3) {
+  animation-delay: 0.4s;
+}
+
+@keyframes bounce {
+  from { transform: translateY(0); opacity: 0.4; }
+  to   { transform: translateY(-6px); opacity: 1; }
+}
+
+/* ======================================================================
+   UTIL
+====================================================================== 
+
+.hide {
+  display: none !important;
+}
+
+/* ===============================
+   SIDE OVERLAY PANEL
+================================ 
+
+.chatOverlay {
+  position: fixed;
+  right: 440px;
+  bottom: 70px;
+
+  width: 360px;
+  max-height: 70vh;
+
+  background: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.25);
+
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+
+  z-index: 1001;
+}
+
+.chatOverlay.hide {
+  display: none;
+}
+
+/* close button 
+#closeOverlayBtn {
+  align-self: flex-end;
+  font-size: 20px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 10px 14px;
+}
+
+/* content 
+#overlayContent {
+  padding: 14px;
+  overflow-y: auto;
+}
+
+/* ===============================
+   EVENT / PRODUCT CARDS
+================================ 
+
+.overlayCard {
+  border: 1px solid #eee;
+  border-radius: 6px;
+  padding: 12px;
+  margin-bottom: 12px;
+}
+
+.overlayCard h4 {
+  margin: 0 0 6px 0;
+  font-size: 15px;
+}
+
+.overlayCard p {
+  margin: 4px 0;
+  font-size: 13px;
+  line-height: 1.4;
+}
+
+.overlayCard a {
+  display: inline-block;
+  margin-top: 6px;
+  color: #233ced;
+  font-size: 13px;
+  text-decoration: none;
+}
+
+.overlayCard a:hover {
+  text-decoration: underline;
+}
+*/

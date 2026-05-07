@@ -1,0 +1,1288 @@
+/* ==========================================================================
+   Figure
+========================================================================== */
+
+#chatbot {
+    position: fixed;
+    z-index: 1000000;
+    top: auto !important;
+    right: 5%;
+    bottom: 10vh !important;
+    left: auto;
+    animation-name: slideInDesktopMessage;
+    animation-duration: 3s;
+    border-radius: 5px;
+    font-family: inherit;
+}
+
+#chatbot .chatbotFigure {
+    position: fixed;
+    bottom: 8px;
+    right: 1.3em;
+    width: 56px;
+    height: 56px;
+    background-image: url("https://image.email.tdc.dk/lib/fe2c11737364047b751c77/m/1/9eaac0b4-553d-411f-801f-c25b08ae6b94.jpg");
+    background-position: center;
+    background-size: cover;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    z-index: 1000;
+    animation: pulse 2s infinite;
+}
+
+.chatbotAvatar {                     
+    width: 28px;
+    height: 28px;
+    background-image: url("https://image.email.tdc.dk/lib/fe2c11737364047b751c77/m/1/9eaac0b4-553d-411f-801f-c25b08ae6b94.jpg");
+    background-position: center;
+    background-size: cover;
+    border-radius: 50%;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
+    z-index: 2;
+    align-self: end;
+    margin: 0 8px 0 0;
+}
+
+.chatbotBadge {
+    position: absolute;
+    top: -4px;
+    right: -4px;
+    min-width: 20px;
+    height: 20px;
+    padding: 0 6px;
+    background: #ff2d2d;
+    color: #fff;
+    font-size: 12px;
+    font-weight: 700;
+    border-radius: 999px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 0 0 2px #fff;
+    pointer-events: none;
+}
+
+/* ==========================================================================
+   Canvas
+========================================================================== */
+
+#chatCanvas {
+    position: fixed;
+    flex-direction: column;
+    bottom: 70px;
+    right: 30px;
+    max-width: 400px;
+    min-width: 400px;
+    background: #fff;
+    border-radius: 5px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    z-index: 1000;
+    letter-spacing: 0.01rem;
+    line-height: 1.125;
+}
+
+.chatCanvasHeader {
+    display: flex;
+    justify-content: space-between;
+    padding: 0.8em;
+    color: #fff;
+    border-radius: 12px 12px 0 0;
+}
+
+.chatCanvasHeader h1 {
+    margin: 0;
+    font-size: 1.3rem;
+    display: flex;
+    align-items: center;
+}
+
+#chatContainer {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    flex-grow: 1;
+    padding: 10px;
+    font-size: smaller;
+    font-weight: 300;
+    border-radius: 5px;
+    max-height: 70vh;
+    overflow-y: auto;
+}
+
+#chatContainer .background{
+    border-radius: 6px;
+    padding: 5px;
+    background-color: white;
+    margin-bottom: 0.5rem;
+}
+
+.welcomeMessage {
+    display: flex;
+}
+
+.welcomeMessage p{
+    padding: 8px 14px;
+    background: #c7d7ff;
+    border-radius: 6px;
+}
+
+#closechatCanvasBtn {
+    align-self: flex-end;
+    font-size: 24px;
+    border: none;
+    background: none;
+    cursor: pointer;
+    transition: 0.5s;
+    border-radius: 50%;
+    color: black
+}
+
+#closechatCanvasBtn:hover {
+    background: #233ced;
+    border-radius: 50%;
+    color: white
+}
+
+.hide{
+    display: none;
+}
+
+.topicsContainer {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.topicItem {
+    padding: 8px 14px;
+    background: #f0f0f0;
+    border-radius: 6px;
+    white-space: nowrap;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.topicItem:hover {
+    background: #dcdcdc;
+}
+
+.topicItem.disabled {
+    pointer-events: none;
+    background: #233ced;
+    color: white;
+}
+
+.chosenTopicContainer {
+    display: flex;
+    justify-content: flex-end;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.subTopicsContainer {
+    display: flex;
+    flex-direction: column; /* one per row */
+    justify-content: flex-end;
+    gap: 8px;
+}
+
+.messageWrapper {
+  display: flex;
+}
+
+.messageWrapper p {
+    padding: 8px 14px;
+    background: #c7d7ff;
+    border-radius: 6px;
+    width: 90%;
+    margin: 0;
+}
+
+.followupContainer .chatbotAvatar{
+  margin-top: 61px;
+  font-weight: bold;
+}
+
+.subTopicItem {
+    padding: 8px 14px;
+    background: #f0f0f0;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.subTopicItem:hover {
+    background: #dcdcdc;
+}
+
+.subTopicItem.disabled {
+    pointer-events: none;
+    background: #233ced;
+    color: white
+}
+
+.chosenSubTopicContainer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+}
+
+.separator {
+    border: none;
+    height: 1px;
+    background: #ccc;
+}
+
+.bouncingDots {
+    display: flex;
+    gap: 4px;
+    align-items: start;
+    justify-content: start;
+}
+
+.bouncingDots div {
+    width: 6px;
+    height: 6px;
+    background: #888;
+    border-radius: 50%;
+    animation: bounce 0.6s infinite alternate;
+}
+
+.bouncingDots div:nth-child(2) {
+    animation-delay: 0.2s;
+}
+
+.bouncingDots div:nth-child(3) {
+    animation-delay: 0.4s;
+}
+
+.loadingDots {
+    display: inline-block;
+    font-weight: bold;
+    font-size: 14px;
+    letter-spacing: 2px;
+    animation: blink 1s infinite steps(3);
+}
+.followupContainer{
+  width:100%;
+  display: flex;
+  align-items: center;
+  justify-items: center;
+}
+
+.follow-up {
+    padding: 8px 14px;
+    background: #c7d7ff;
+    border-radius: 6px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+.follow-up p{
+  margin: 0;
+}
+
+.chat-options {
+    background-color: #233ced;
+    color: #fff;
+    margin-top: 8px;
+    padding: 10px;
+    border-radius: 6px;
+    font-size: 0.8rem;
+    border: none;
+    transition: 0.5s;
+    border: solid 1px #233ced;
+    width: 80%;
+}
+
+.chat-options:hover {
+    background-color: #fff;
+    color: #233ced;
+    width: 80%;
+}
+
+.followupButtons {
+  display: flex;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.followupButtons button {
+  padding: 6px 12px;
+  cursor: pointer;
+}
+
+@keyframes blink {
+    0%   { opacity: 0 }
+    50%  { opacity: 1 }
+    100% { opacity: 0 }
+}
+
+@keyframes bounce {
+    from {
+        transform: translateY(0);
+        opacity: 0.4;
+    }
+    to {
+        transform: translateY(-6px);
+        opacity: 1;
+    }
+}
+
+@keyframes pulse {
+    0% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.1);
+    }
+
+    100% {
+        transform: scale(1);
+    }
+}
+
+
+/* ==========================================================================
+   Form
+========================================================================== */
+
+#chatbot-form {
+  bottom: 70px;
+  right: 20px;
+  width: 100%;
+  height: auto;
+  box-sizing: content-box;
+  background: #fff;
+  border-radius: 12px;
+  flex-direction: column;
+  z-index: 1000;
+  font-family: sans-serif;
+  display: none;
+}
+
+#results {
+  display: none;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  width: 100%;
+  max-height: 200px;
+  overflow-y: auto;
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  z-index: 10000;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.popup-header {
+  display: flex;
+  justify-content: space-between;
+  padding: 0.8em;
+  background: #233ced;
+  color: #fff;
+  border-radius: 12px 12px 0 0;
+  display: flex;
+}
+
+.popup-header button {
+  align-self: flex-end;
+  font-size: 24px;
+  border: none;
+  background: none;
+  color: #fff;
+  cursor: pointer;
+}
+
+.close-btn {
+  border-radius: 50%;
+  transition: 0.5s;
+}
+
+.close-btn:hover {
+  background: #fff;
+  color: #233ced;
+}
+
+.popup-header h1 {
+  margin: 0;
+  font-size: 1.3rem;
+}
+
+.popup-header p {
+  margin: 0;
+  font-size: 0.8rem;
+}
+
+.formHeaderContianer p{
+  font-size: 17px;
+  margin: 0
+}
+
+.input-group {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-left: 0.5em;
+  padding-right: 0.5em;
+  padding-top: 2rem;
+  width: 95%;
+}
+
+.input-group label {
+  align-self: flex-start;
+  font-size: 0.9rem;
+  padding-top: 0.2em;
+  padding-bottom: 0.5em;
+}
+
+.input-group input {
+  width: 98%;
+  height: 1.4em;
+  border-top: 0;
+  border-left: 0;
+  border-right: 0;
+  border: gray;
+  border-bottom: solid 1px;
+}
+
+.input-group textarea {
+  width: 98%;
+  min-height: 5em;
+  border: gray;
+  border-bottom: solid 1px;
+  font-family: inherit;
+}
+
+.checkbox-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  align-self: center;
+  box-sizing: border-box;
+  padding: 0 1em 0 1em;
+}
+
+input[type=checkbox] {
+  transform: scale(1.5);
+  margin-bottom: 60px;
+}
+
+.checkbox-container p {
+  font-size: 0.8rem;
+  padding-left: 15px;
+}
+
+.submit-btn-section {
+  width: 100%;
+  height: 50px;
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+}
+
+.submit-btn {
+  border: solid 1px #233ced;
+  border-radius: 6px;
+  background: #233ced;
+  color: #fff;
+  cursor: pointer;
+  width: 120px;
+  height: 30px;
+  transition: 0.5s;
+}
+
+.submit-btn:hover {
+  background: #fff;
+  color: #233ced;
+}
+
+@media only screen and (max-width: 767px) {
+
+  #chatbot-form {
+    width: 90%;
+    right: 5%;
+  }
+
+  .form-group input,
+  #chatbot-form select {
+    width: 100%;
+  } 
+
+  .submit-btn-section {
+    flex-direction: column;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 30px;
+  }
+
+  .submit-btn {
+    width: 50%;
+    margin-bottom: 10px;
+    align-items: center;
+  }
+}
+
+/*==============================================================================
+Form Popup
+==============================================================================*/
+
+#formMainCaptureWrapper {
+    position: relative;
+    z-index: 10000 !important;
+}
+
+#formMainCaptureWrapper .overlay {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    opacity: .4;
+    width: 100%;
+    height: 100%;
+    background-color: #000;
+}
+
+#formMainCaptureWrapper .popup {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    width: 350px;
+    background-color: #ffff;
+    background-position: center bottom;
+    background-size: cover;
+    background-repeat: no-repeat;
+    transform: translateX(-50%) translateY(-50%);
+    border-color: #3b3b3b;
+    border-radius: 6px;
+    max-height: 98vh;
+}
+
+#formMainCaptureWrapper .popupMainPanel,
+#formMainCaptureWrapper .confirmMainPanel {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-orient: vertical;
+    -webkit-box-direction: normal;
+    -ms-flex-direction: column;
+    flex-direction: column;
+    -webkit-box-pack: center;
+    -ms-flex-pack: center;
+    justify-content: center;
+    -webkit-box-align: center;
+    -ms-flex-align: center;
+    align-items: center;
+    width: 100%;
+    text-align: center;
+    min-height: fit-content;
+}
+
+#formMainCaptureWrapper .headerContainer {
+    width: 90%;
+    padding-top: 5px !important;
+    margin-bottom: 10px;
+    margin: 0 auto;
+}
+
+#formMainCaptureWrapper .optoutMsg {
+    font-size: .85rem;
+    margin: 15px;
+    color: whitesmoke;
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+#formMainCaptureWrapper h1,
+#formMainCaptureWrapper h2 {
+    margin: 0 0 .5rem;
+    padding: 0;
+    font-weight: 500;
+    font-family: inherit;
+    line-height: 1.2;
+}
+
+#formMainCaptureWrapper .display4 {
+    font-size: 1.3462rem;
+    font-weight: 700;
+    line-height: 1.2;
+    text-align: left;
+}
+
+#formMainCaptureWrapper h2 {
+    font-size: 1rem;
+    text-align: left;
+    margin: auto;
+    font-weight: 350;
+}
+
+#confirm h2 {
+    font-size: 1.2rem;
+    text-align: center;
+    margin-top: 15px;
+    font-weight: 500;
+    font-family: inherit;
+    line-height: 1.2;
+}
+
+
+#formMainCaptureWrapper .evgBtn {
+    display: inline-block;
+    vertical-align: middle;
+    padding: .5rem 1rem;
+    border: 1px solid transparent;
+    border-radius: 5px;
+    color: #215ca0;
+    background-color: transparent;
+    font-size: 1rem;
+    font-weight: 400;
+    line-height: 1.5;
+    text-align: center;
+    text-decoration: none;
+    transition:
+        color .15s ease-in-out,
+        background-color .15s ease-in-out,
+        border-color .15s ease-in-out,
+        box-shadow .15s ease-in-out;
+    cursor: pointer;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+#formMainCaptureWrapper .evgBtnLg {
+    padding: .5rem 2rem;
+    border-radius: 5px;
+}
+
+#formMainCaptureWrapper .evgCta {
+    font-size: .75rem;
+    border-radius: 5px;
+    font-weight: 700;
+    padding: .85em;
+    min-width: 50px;
+    margin-top: 1.2em;
+    margin-bottom: 3em;
+}
+
+
+.formContainer {
+    width: 100%;
+}
+
+.popupMainPanel_inner{
+    overflow-y: auto;
+    max-height: 80vh;
+}
+
+.mainform { 
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-orient: vertical;
+    -webkit-box-direction: normal;
+    -ms-flex-direction: column;
+    flex-direction: column;
+    -webkit-box-pack: center;
+    -ms-flex-pack: center;
+    justify-content: center;
+    -webkit-box-align: center;
+    -ms-flex-align: center;
+    align-items: center;
+    width: 100%;
+    text-align: center;
+    padding: 4%;
+}
+
+.inputFieldWrapper {
+    display: flex;
+    align-items: stretch;
+    position: relative;
+    border-radius: 5px;
+    border: 0.2px solid darkgray;
+    width: 100%;
+    margin: .5rem 0;
+    color: white;
+    background-color: white;
+}
+
+.inputFieldWrapper input {
+    font-family: 'TDC', Mukta Mahee, Helvetica Neue, Arial, sans-serif;
+    background-color: transparent !important;
+    color: #27292b;
+    font-size: 14px;
+    font-weight: 200;
+    width: 100%;
+    padding: .85em;
+    border: none;
+    outline: none;
+    overflow: hidden !important;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.inputFieldWrapper textarea {
+    font-family: 'TDC', Mukta Mahee, Helvetica Neue, Arial, sans-serif;
+    background-color: transparent !important;
+    color: #27292b;
+    font-weight: 200;
+    font-size: 14px;
+    width: 100%;
+    padding: .85em;
+    border: none;
+    outline: none;
+}
+
+.inputFieldWrapper input.ellipsis{
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+
+.inputFieldWrapper textarea:focus, input:focus + label,
+.inputFieldWrapper input:not(:placeholder-shown) + label {
+    top: 21;
+    left: 5px;
+    font-size: 14px;
+    color: #666565;
+    outline: none;
+    border: none;
+}
+
+.inputFieldWrapper label {
+    position: absolute;
+    top: 21%;
+    left: 12px;
+    color: #666565;
+    pointer-events: none;
+    transition: 0.4s ease all;
+    padding: 0 4px;
+}
+
+@keyframes floatLabel {
+    0% {
+        transform: translateY(-50%) scale(1);
+    }
+    100% {
+        transform: translateY(-100%) scale(0.85);
+    }
+}
+
+.inputFieldWrapper input:focus ~ label,
+.inputFieldWrapper input:valid ~ label {
+    left: 5px;
+    color: #666565;
+    background-color: white;
+    animation: floatLabel 0.3s ease forwards;
+}
+
+.btnContainer {
+    display: flex;
+    align-items: center;
+    margin-top: 1em;
+    margin-bottom: .8em;
+    width: 90%;
+    margin: 0 auto;
+    justify-content: flex-end;
+}
+
+#cancelButton {  
+    background-color: transparent;
+    color: #3b3b3b;
+    border: none;
+    width: 100px;
+}
+
+#cancelButton:hover {
+    background-color:#fafafa;
+}
+
+
+.item {
+    padding: 10px;
+    background: #ddd;
+    border: .5px solid #dde;
+}
+
+.part{
+    position: relative;
+    width: 5%;
+}
+
+.inputMainWrapper{
+    width: 100%;
+}
+
+.searchIcon {
+    position: absolute;
+    top: 50%;
+    font-weight: bold;
+    transform: translateY(-50%);
+    color: #999;
+    pointer-events: none;
+}
+
+svg{
+    color: grey;
+    opacity: .5;
+    font-weight: 700;
+}
+
+.resultItem {
+    font-family: 'TDC', Mukta Mahee, Helvetica Neue, Arial, sans-serif;
+    text-align: left;
+    padding: 5px;
+    color: #595858;
+}
+
+.resultItem:hover {
+    color: darkgrey;
+    font-weight: bold;
+    border-color: #bfbdbd;
+}
+
+.results {
+    border-radius: 5px; 
+    display: none; 
+    border: 1px solid rgb(204, 204, 204); 
+    max-height: 200px; 
+    overflow-y: auto; 
+    position: absolute; 
+    z-index: 1000; 
+    top: 100%; 
+    background: white; 
+    width: 100%;
+}
+
+
+.hide{
+    display: none !important;
+}
+
+#beContacted {
+  margin-top: 10px
+}
+
+.thankYouContainer{
+    min-height: 70vh;
+    width: 100%;
+    display: none;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+#thankYouAvatar{
+    align-self: center;
+}
+
+.thankYouContainer h1{
+    align-self: center;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* ========= CHAT BASIC ========= */
+
+#chatbot { position: fixed; bottom: 20px; right: 20px; }
+
+.chatbotFigure {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background-size: cover;
+  cursor: pointer;
+}
+
+.chatCanvasHeader { display:flex; justify-content:space-between; }
+
+/* ========= MESSAGES ========= */
+
+.agentMessageWrapper,
+.userMessageWrapper {
+  display:flex;
+  gap:8px;
+  margin:8px;
+}
+
+.userMessageWrapper {
+  justify-content: flex-end;
+}
+
+.agentMessage {
+  background:#eee;
+  padding:10px;
+  border-radius:10px;
+}
+
+.userMessage {
+  background:#233ced;
+  color:#fff;
+  padding:10px;
+  border-radius:10px;
+}
+
+/* ========= LIST ========= */
+
+.chatListItem {
+  background:#f5f5f5;
+  padding:6px 10px;
+  margin:4px;
+  border-radius:6px;
+  cursor:pointer;
+}
+
+/* ========= FORM ========= */
+
+.formContainer {
+  background:#fff;
+  border-radius:12px;
+  padding:16px;
+}
+
+/* Floating label */
+.input-group {
+  position: relative;
+  margin-bottom:18px;
+}
+
+.input-group input,
+.input-group textarea {
+  width:100%;
+  border:none;
+  border-bottom:1px solid #ccc;
+  padding:10px 0 6px;
+  outline:none;
+}
+
+.input-group label {
+  position:absolute;
+  left:0;
+  top:10px;
+  color:#999;
+  transition:0.2s;
+}
+
+.input-group input:focus + label,
+.input-group input:not(:placeholder-shown) + label,
+.input-group textarea:focus + label,
+.input-group textarea:not(:placeholder-shown) + label {
+  top:-10px;
+  font-size:11px;
+  color:#233ced;
+}
+
+/* Buttons */
+.submit-btn-section {
+  display:flex;
+  gap:8px;
+}
+
+.submit-btn-section button {
+  flex:1;
+  padding:8px;
+  border-radius:6px;
+  border:none;
+  background:#233ced;
+  color:#fff;
+  cursor:pointer;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* ===============================
+   FORM
+================================ */
+
+/* =========================================================
+   FORM LAYOUT WRAPPER
+========================================================= */
+
+.mainform {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    text-align: center;
+    padding: 4%;
+}
+
+
+/* =========================================================
+   INPUT FIELD CONTAINER
+========================================================= */
+
+.inputMainWrapper {
+    width: 100%;
+}
+
+/* Wrapper around each input */
+.inputFieldWrapper {
+    display: flex;
+    align-items: stretch;
+    position: relative;
+
+    width: 100%;
+    margin: 0.5rem 0;
+
+    border-radius: 5px;
+    border: 0.5px solid darkgray;
+
+    background-color: #fff;
+    color: #27292b;
+}
+
+
+/* =========================================================
+   INPUT + TEXTAREA BASE STYLES
+========================================================= */
+
+.inputFieldWrapper input,
+.inputFieldWrapper textarea {
+    width: 100%;
+
+    border: none;
+    outline: none;
+
+    background-color: transparent !important;
+    font-family: 'TDC', Mukta Mahee, Helvetica Neue, Arial, sans-serif;
+    font-size: 14px;
+    font-weight: 200;
+    color: #27292b;
+
+    padding: 0.85em;
+}
+
+/* Textarea specifics */
+.inputFieldWrapper textarea {
+    resize: vertical;
+}
+
+/* Optional ellipsis behavior */
+.inputFieldWrapper input.ellipsis {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+
+/* =========================================================
+   FLOATING LABEL (CORE UX FEATURE)
+========================================================= */
+
+/* Default label position (inside field) */
+.inputFieldWrapper label {
+    position: absolute;
+    top: 21%;
+    left: 12px;
+
+    padding: 0 4px;
+    font-size: 14px;
+    color: #666565;
+
+    pointer-events: none;
+    transition: 0.3s ease all;
+}
+
+/* Floating animation keyframe */
+@keyframes floatLabel {
+    0% {
+        transform: translateY(-50%) scale(1);
+    }
+    100% {
+        transform: translateY(-100%) scale(0.85);
+    }
+}
+
+/* Label moves when input is active or filled */
+.inputFieldWrapper input:focus ~ label,
+.inputFieldWrapper input:valid ~ label,
+.inputFieldWrapper textarea:focus ~ label,
+.inputFieldWrapper textarea:valid ~ label {
+    top: 0;
+    left: 5px;
+
+    font-size: 11px;
+    color: #666565;
+    background: white;
+
+    animation: floatLabel 0.3s ease forwards;
+}
+
+
+/* =========================================================
+   SEARCH ICON (CVR FIELD)
+========================================================= */
+
+.searchIcon {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+
+    color: #999;
+    font-weight: bold;
+
+    pointer-events: none;
+}
+
+/* Optional SVG styling */
+svg {
+    color: grey;
+    opacity: 0.5;
+    font-weight: 700;
+}
+
+
+/* =========================================================
+   SEARCH RESULTS DROPDOWN
+========================================================= */
+
+.results {
+    position: absolute;
+    top: 100%;
+
+    width: 100%;
+    max-height: 200px;
+    overflow-y: auto;
+
+    background: white;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+
+    z-index: 1000;
+
+    display: none;
+}
+
+/* Result item */
+.resultItem {
+    padding: 6px;
+    text-align: left;
+
+    font-family: 'TDC', Mukta Mahee, Helvetica Neue, Arial, sans-serif;
+    font-size: 13px;
+    color: #595858;
+
+    cursor: pointer;
+}
+
+/* Hover state */
+.resultItem:hover {
+    color: darkgrey;
+    font-weight: bold;
+}
+
+
+/* =========================================================
+   BUTTON SECTION
+========================================================= */
+
+.btnContainer {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+
+    width: 90%;
+    margin: 1em auto 0.8em;
+}
+
+/* Cancel button */
+#cancelButton {
+    width: 100px;
+
+    background: transparent;
+    border: none;
+
+    color: #3b3b3b;
+    cursor: pointer;
+}
+
+#cancelButton:hover {
+    background-color: #fafafa;
+}
+
+
+/* =========================================================
+   SMALL UI HELPERS
+========================================================= */
+
+/* Generic item block (optional usage) */
+.item {
+    padding: 10px;
+    background: #ddd;
+    border: 0.5px solid #dde;
+}
+
+.part {
+    width: 5%;
+    position: relative;
+}
+
+
+#beContacted {
+    margin-top: 10px;
+}

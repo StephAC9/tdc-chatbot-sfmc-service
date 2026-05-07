@@ -1,0 +1,35 @@
+<div class="{{style.className}} chatbot-visible" id="chatbot" data-evg-campaign-id="{{campaign}}"
+data-evg-experience-id="{{experience}}" data-evg-user-group="{{userGroup}}" role="dialog" aria-hidden="false"
+aria-label="Slide-In Message{{#if header}} {{header}}{{/if}}{{#if subheader}} {{subheader}}{{/if}}">
+    
+    <div class="chatbotFigure">
+        <span class="chatbotBadge">1</span>
+    </div>
+
+    <div id="chatCanvas" class="hide">
+        <div class="chatCanvasHeader">
+            <img
+                class="chatHeaderLogo"
+                src="https://image.email.tdc.dk/lib/fe2c11737364047b751c77/m/1/79b90e80-ae14-420f-81af-893aa8f8369f.png"
+                alt="TDC logo"
+            />
+            <button id="closechatCanvasBtn" aria-label="Luk">&times;</button>
+
+        <!--<button id="closechatCanvasBtn">&times;</button>-->
+        </div>
+
+        <hr class="separator" />
+
+        <!-- ✅ All messages + loaders go here -->
+        <div id="chatContainer"></div>     
+    </div>
+
+    <!-- ===============================
+        CHATBOT OVERLAY (EVENT / PRODUCT)
+    ================================ -->
+    <div id="chatOverlay" class="chatOverlay hide">
+        <button id="closeOverlayBtn" aria-label="Luk">&times;</button>
+        <div id="overlayContent"></div>
+    </div>
+
+</div>
